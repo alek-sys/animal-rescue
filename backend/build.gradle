@@ -5,6 +5,7 @@ plugins {
 	id 'java'
 	id 'jacoco'
 	id 'org.checkerframework' version '0.5.12'
+	id 'info.solidsoft.pitest' version '1.5.2'
 }
 
 group = 'io.spring.cloud.samples.animalrescue'
@@ -19,6 +20,8 @@ configurations {
 		extendsFrom developmentOnly
 	}
 }
+
+build.dependsOn('pitest')
 
 checkerFramework {
 	excludeTests = true
@@ -45,6 +48,7 @@ dependencies {
 
     runtimeOnly 'com.h2database:h2'
 
+	testImplementation 'org.pitest:pitest-junit5-plugin:0.12'
 	testImplementation('org.springframework.security:spring-security-test')
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
@@ -52,6 +56,15 @@ dependencies {
 	testImplementation 'io.projectreactor:reactor-test'
 	testImplementation('org.seleniumhq.selenium:htmlunit-driver')
 	testImplementation('org.seleniumhq.selenium:selenium-java')
+}
+
+pitest {
+    threads = 4
+    outputFormats = ['XML', 'HTML']
+    timestampedReports = false
+	junit5PluginVersion = '0.12'
+//	mainSourceSets = [project.sourceSets.main, project(':shared').sourceSets.main]
+//	additionalMutableCodePaths = [configurations.mutableCodeBase.singleFile]
 }
 
 test {
